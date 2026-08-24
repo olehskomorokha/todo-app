@@ -44,22 +44,14 @@ git submodule status
 
 ```env
 MSSQL_SA_PASSWORD=Your_Strong_Password1!
-JWT_KEY=Your_Random_JWT_Key_At_Least_32_Characters_Long
+JWT_KEY=Your_JWT_Secret_Key_At_Least_32_Characters_Long
 JWT_ISSUER=ToDoApp
 JWT_AUDIENCE=ToDoAppUsers
 ```
 
 Пароль має містити щонайменше 8 символів і символи принаймні трьох категорій: великі літери, малі літери, цифри та спеціальні символи.
 
-Згенеруйте криптографічно випадковий JWT-ключ у PowerShell:
-
-```powershell
-$bytes = New-Object byte[] 64
-[Security.Cryptography.RandomNumberGenerator]::Fill($bytes)
-[Convert]::ToBase64String($bytes)
-```
-
-Скопіюйте отримане значення в `JWT_KEY` у файлі `.env`. JWT-ключ повинен мати щонайменше 32 символи.
+`JWT_KEY` — секретний ключ для підпису JWT-токенів. Передайте його через `.env`; значення повинно містити щонайменше 32 символи. Окремо генерувати ключ PowerShell-командами не обов'язково — можна вказати власний довгий непередбачуваний рядок.
 
 Файл `.env` виключений із Git. Не публікуйте та не передавайте його разом із вихідним кодом. Під час розгортання на іншому комп'ютері потрібно створити новий `.env` із новими секретами.
 
@@ -110,7 +102,7 @@ docker compose ps
 docker compose logs -f
 ```
 
-Docker Compose передає JWT-налаштування з `.env` у backend-контейнер. Цей спосіб зручний для локальної розробки, але environment-змінні контейнера можна переглянути через `docker inspect`. Для production використовуйте сховище секретів платформи розгортання, наприклад Azure Key Vault, AWS Secrets Manager або Docker Secrets.
+Docker Compose передає `JWT_KEY`, `JWT_ISSUER` та `JWT_AUDIENCE` з `.env` у backend-контейнер. Якщо `JWT_KEY` не заданий, Compose зупинить запуск із повідомленням `Set JWT_KEY in .env`. Environment-змінні контейнера можна переглянути через `docker inspect`, тому для production використовуйте захищене сховище секретів.
 
 ## Міграції бази даних
 

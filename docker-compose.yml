@@ -27,6 +27,9 @@ services:
       ASPNETCORE_ENVIRONMENT: Development
       ASPNETCORE_HTTP_PORTS: 8080
       ConnectionStrings__DefaultConnection: "Server=sqlserver,1433;Database=todoAppDb;User Id=sa;Password=${MSSQL_SA_PASSWORD};TrustServerCertificate=True;"
+      Jwt__Key: ${JWT_KEY:?Set JWT_KEY in .env}
+      Jwt__Issuer: ${JWT_ISSUER:-ToDoApp}
+      Jwt__Audience: ${JWT_AUDIENCE:-ToDoAppUsers}
     ports:
       - "8080:8080"
     depends_on:
